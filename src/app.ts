@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 import { errorConverter, errorHandler } from "./utils/error";
 import ApiError from "./utils/apiError";
 import routes from "./routes";
+import { getRateLimitConfig } from "./config/ratingLimit";
 
 const app: Express = express();
 
@@ -20,9 +21,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
-app.use(cors());
-app.options("*", cors());
-
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(",") || "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  })
+);
 // Logging
 app.use(morgan("combined"));
 
@@ -30,10 +34,7 @@ app.use(morgan("combined"));
 app.use(compression());
 
 // Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
+const limiter = rateLimit(getRateLimitConfig());
 app.use(limiter);
 
 // API routes
