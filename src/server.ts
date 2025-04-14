@@ -7,7 +7,7 @@ const server = http.createServer(app);
 // Start server after DB connection
 const startServer = async (): Promise<void> => {
   try {
-    await connectDB(); // Establish DB connection first
+    await connectDB();
 
     server.listen(config.port, () => {
       console.log(

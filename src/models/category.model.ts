@@ -12,14 +12,21 @@ const CategorySchema = new Schema<CategoryInterface>(
     slug: {
       type: String,
       required: [true, "Slug is required"],
-      unique: true,
       trim: true,
       match: [/^[a-z0-9-]+$/, "Slug must be URL-friendly"],
+      unique: true,
+      index: true,
     },
     path: {
       type: String,
       required: [true, "Path is required"],
+      trim: true,
+      match: [
+        /^\/[a-z0-9-/]+$/,
+        "Path must start with / and contain only lowercase letters, numbers, hyphens, and slashes",
+      ],
       unique: true,
+      index: true,
     },
     isActive: {
       type: Boolean,
@@ -36,15 +43,6 @@ const CategorySchema = new Schema<CategoryInterface>(
     toObject: { virtuals: true },
   }
 );
-
-CategorySchema.index({ slug: 1 }, { unique: true });
-CategorySchema.index({ path: 1 }, { unique: true });
-
-CategorySchema.virtual("subcategories", {
-  ref: "Category",
-  localField: "_id",
-  foreignField: "parentId",
-});
 
 const Category = (
   mongoose: typeof import("mongoose")

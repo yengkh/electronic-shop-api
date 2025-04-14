@@ -1,0 +1,13 @@
+Use standardized codes for common errors:
+
+NOT_FOUND - 404 errors
+
+VALIDATION_ERROR - 400 bad requests
+
+AUTH_REQUIRED - 401 unauthorized
+
+FORBIDDEN - 403 permissions
+
+CONFLICT - 409 duplicate data
+
+SERVER_ERROR - 500 internal errors
