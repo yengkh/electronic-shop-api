@@ -3,11 +3,13 @@ import { Route } from "@/types/route.interface";
 
 import userRoutes from "./user.route";
 import CategoryRouter from "./category.route";
+import SubCategoryRouter from "./subCategory.route";
 
 const router = Router();
 const routes: Route[] = [
   { path: "", route: userRoutes },
   { path: "/category", route: CategoryRouter },
+  { path: "/sub-category", route: SubCategoryRouter },
 ];
 
 routes.forEach((route) => {

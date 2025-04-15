@@ -6,7 +6,6 @@ import slugify from "slugify";
 import { sendError, sendSuccess } from "../utils/apiRespone";
 
 const CategoryModel = Category(mongoose);
-const date = new Date().toISOString();
 
 export const createCategoryHandler = async (
   req: Request,
@@ -120,7 +119,7 @@ export const getCategoryHandlerBySlug = async (
     sendSuccess({
       res,
       message: "Successfully get all category list!",
-      data: [],
+      data: category,
     });
   } catch (error: unknown) {
     handleHttpError(error, res, {
@@ -216,16 +215,6 @@ export const updateCategoryhandler = async (
   try {
     const id = req.params.id;
     const { name, isActive, description } = req.body;
-
-    if (!name?.trim()) {
-      sendError({
-        res,
-        status: 400,
-        message: "Category name is required",
-        code: "VALIDATION_ERROR",
-        details: ["Name cannot be empty"],
-      });
-    }
 
     const updateData = {
       name: name.trim(),

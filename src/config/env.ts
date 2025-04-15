@@ -13,7 +13,7 @@ const validateEnvVars = (): void => {
   requiredEnvVars.forEach((varName) => {
     if (!process.env[varName]) {
       throw new Error(`Environment variable ${varName} is missing`);
-    }
+    } 
   });
 };
 

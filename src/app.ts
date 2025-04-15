@@ -8,6 +8,8 @@ import { errorConverter, errorHandler } from "./utils/error";
 import ApiError from "./utils/apiError";
 import routes from "./routes";
 import { getRateLimitConfig } from "./config/ratingLimit";
+import "../src/config/env";
+import path from "path";
 
 const app: Express = express();
 
@@ -36,6 +38,9 @@ app.use(compression());
 // Rate limiting
 const limiter = rateLimit(getRateLimitConfig());
 app.use(limiter);
+
+// Handle static files
+app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // API routes
 app.use("/api/v1", routes);

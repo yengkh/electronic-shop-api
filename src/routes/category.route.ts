@@ -6,8 +6,9 @@ import {
   deleteContainerByIdHandler,
   updateCategoryhandler,
 } from "../controllers/category.controller";
+
 const router: Router = express.Router();
-// POST create new category
+
 router.post("/", createCategoryHandler);
 router.get("/", getAllCategoryHandler);
 router.get("/:identifier", getCategoryHandler);
