@@ -1,6 +1,5 @@
 import { SubcategoryInterface } from "@/types/subcategory.interface";
 import mongoose, { Model, Schema, Types } from "mongoose";
-import slugify from "slugify";
 
 const SubcategorySchema = new Schema<SubcategoryInterface>(
   {
@@ -100,8 +99,8 @@ const SubcategorySchema = new Schema<SubcategoryInterface>(
 //   next();
 // });
 
-SubcategorySchema.index({ path: 1 });
-SubcategorySchema.index({ slug: 1, categoryId: 1 }, { unique: true });
+SubcategorySchema.index({ path: 1, categoryId: 1 });
+SubcategorySchema.index({ slug: 1, categoryId: 1 });
 SubcategorySchema.index({ isActive: 1, featured: 1, displayOrder: 1 });
 
 const Subcategory = (

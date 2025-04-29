@@ -74,7 +74,7 @@ export const createSubcategoryHandler = async (
     if (req.file) {
       imageData = {
         url: `${FILE_DOMAIN}${SUP_DOMAIN_IMAGE_PATH_SUBCATEGORY}${req.file.filename}`,
-        altText: name.trim() || slug,
+        altText: name.trim(),
       };
     }
 
@@ -304,7 +304,6 @@ export const deleteSubcategoryHandler = async (req: Request, res: Response) => {
       res,
       status: 200,
       message: `Subcatgory with ID ${subcategoryId} was deleted successfully!`,
-      data: deletedSubcategory,
     });
   } catch (error) {
     handleHttpError(error, res, {

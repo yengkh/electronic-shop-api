@@ -32,6 +32,8 @@ app.use(
 // Logging
 app.use(morgan("combined"));
 
+app.use(express.urlencoded({ extended: true }));
+
 // Compression
 app.use(compression());
 

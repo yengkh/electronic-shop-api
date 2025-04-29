@@ -2,6 +2,7 @@ import app from "./app";
 import http from "http";
 import config from "./config/env";
 import connectDB from "./config/db";
+import chalk from "chalk";
 
 const server = http.createServer(app);
 // Start server after DB connection
@@ -11,7 +12,11 @@ const startServer = async (): Promise<void> => {
 
     server.listen(config.port, () => {
       console.log(
-        `🚀 Server running in ${config.nodeEnv} mode on port ${config.port}`
+        chalk.green.bold(
+          `🚀 Server running in ${chalk.yellow(
+            config.nodeEnv
+          )} mode on port ${chalk.cyan(config.port.toString())}`
+        )
       );
     });
   } catch (err) {
