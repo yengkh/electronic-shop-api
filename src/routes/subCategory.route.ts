@@ -5,6 +5,7 @@ import {
   deleteSubcategoryHandler,
   getSubcategoryByIdentifier,
   updateSubcategoryHandler,
+  getSubcategoryByCategoryIdHandler,
 } from "../controllers/subcategory.controller";
 import { createUploader } from "../utils/singleFileStorage";
 
@@ -15,6 +16,7 @@ const router: Router = express.Router();
 router.post("/", upload.single("image"), createSubcategoryHandler);
 router.get("/", getAllSubcategoryHandler);
 router.get("/:identifier", getSubcategoryByIdentifier);
+router.get("/category/:categoryId", getSubcategoryByCategoryIdHandler);
 router.delete("/:id", deleteSubcategoryHandler);
 router.put("/:id", upload.single("image"), updateSubcategoryHandler);
 

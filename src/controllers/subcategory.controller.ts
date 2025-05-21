@@ -235,6 +235,40 @@ export const getSubcategoryByIdentifier = async (
   }
 };
 
+export const getSubcategoryByCategoryIdHandler = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const categoryId = req.params.categoryId;
+    if (!categoryId) {
+      sendError({
+        res,
+        status: 400,
+        message: "Invalid request",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+
+    const subcategoryByCategoryId = await SubcategoryModel.find({
+      categoryId,
+    }).populate("categoryId", "name slug");
+
+    sendSuccess({
+      res,
+      message: "Subcategories retrieved successfully!",
+      data: subcategoryByCategoryId,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: isDevelopment,
+    });
+  }
+};
+
 export const deleteSubcategoryHandler = async (req: Request, res: Response) => {
   try {
     const subcategoryId = req.params.id;
