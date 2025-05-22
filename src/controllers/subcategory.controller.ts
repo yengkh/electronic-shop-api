@@ -16,6 +16,7 @@ const SubcategoryModel = Subcategory(mongoose);
 const CategoryModel = Category(mongoose);
 const isDevelopment = process.env.NODE_ENV === "development";
 
+// Crate or post subcategory
 export const createSubcategoryHandler = async (
   req: Request,
   res: Response
@@ -107,6 +108,7 @@ export const createSubcategoryHandler = async (
   }
 };
 
+// Get all subcategory
 export const getAllSubcategoryHandler = async (req: Request, res: Response) => {
   try {
     const subcategories = await SubcategoryModel.find({})
@@ -127,6 +129,7 @@ export const getAllSubcategoryHandler = async (req: Request, res: Response) => {
   }
 };
 
+// Get subcategory by slug
 export const getSubcategoryHandlerBySlug = async (
   req: Request,
   res: Response
@@ -172,6 +175,7 @@ export const getSubcategoryHandlerBySlug = async (
   }
 };
 
+// Get subcategory by ID
 export const getSubcategoryHandlerById = async (
   req: Request,
   res: Response
@@ -217,6 +221,7 @@ export const getSubcategoryHandlerById = async (
   }
 };
 
+// Get subcategory by Identifier
 export const getSubcategoryByIdentifier = async (
   req: Request,
   res: Response,
@@ -235,6 +240,7 @@ export const getSubcategoryByIdentifier = async (
   }
 };
 
+// Get Subcategory By Cagetogory ID
 export const getSubcategoryByCategoryIdHandler = async (
   req: Request,
   res: Response
@@ -269,6 +275,52 @@ export const getSubcategoryByCategoryIdHandler = async (
   }
 };
 
+export const getSubcategoryByPath = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { path } = req.query;
+    if (!path || typeof path !== "string") {
+      sendError({
+        res,
+        status: 400,
+        message: `You must input a valid path of subCategory!`,
+        code: "VALIDATION_ERROR",
+        details: ["Missing or invalid 'path' query parameter."],
+      });
+
+      return;
+    }
+
+    const subCategoey = await SubcategoryModel.findOne({ path });
+    if (!subCategoey) {
+      sendError({
+        res,
+        status: 404,
+        message: "SubCategory not found by path.",
+        code: "NOT_FOUND",
+        details: [`Path: ${path}`],
+      });
+
+      return;
+    }
+
+    sendSuccess({
+      res,
+      status: 200,
+      message: "Subcategory fetch successfully!",
+      data: subCategoey,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: isDevelopment,
+    });
+  }
+};
+
+// Delete subcategory
 export const deleteSubcategoryHandler = async (req: Request, res: Response) => {
   try {
     const subcategoryId = req.params.id;
@@ -348,6 +400,7 @@ export const deleteSubcategoryHandler = async (req: Request, res: Response) => {
   }
 };
 
+// Update subcategory
 export const updateSubcategoryHandler = async (
   req: Request,
   res: Response
