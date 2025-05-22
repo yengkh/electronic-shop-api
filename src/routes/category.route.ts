@@ -35,7 +35,7 @@ router.get("/:identifier", getCategoryHandler);
  *       500:
  *         description: Can not get category
  */
-router.get("/:slug/slug", getCategoryBySlugHandler);
+router.get("/slug/:slug", getCategoryBySlugHandler);
 router.get("/category/by-path", getCategoryByPathHandler);
 router.delete("/:id", deleteContainerByIdHandler);
 router.put("/:id", updateCategoryhandler);
