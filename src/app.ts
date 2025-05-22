@@ -50,7 +50,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 app.use("/api/v1", routes);
 
 // Doscument
-app.use("/dosc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Send 404 for unknown routes
 app.use((req: Request, res: Response, next: NextFunction) => {

@@ -14,5 +14,5 @@ export const swaggerSpec = swaggerJSDoc({
       },
     ],
   },
-  apis: ["./src/routes/*.ts"], // Adjust to your file paths
+  apis: ["./src/routes/**/*.ts"], // Adjust to your file paths
 });

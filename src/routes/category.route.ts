@@ -14,6 +14,27 @@ const router: Router = express.Router();
 router.post("/", createCategoryHandler);
 router.get("/", getAllCategoryHandler);
 router.get("/:identifier", getCategoryHandler);
+
+/**
+ * @swagger
+ * /category/{slug}/slug:
+ *   get:
+ *     summary: Get category by slug
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The category slug
+ *     responses:
+ *       200:
+ *         description: Category found
+ *       404:
+ *         description: Category not found
+ *       500:
+ *         description: Can not get category
+ */
 router.get("/:slug/slug", getCategoryBySlugHandler);
 router.get("/category/by-path", getCategoryByPathHandler);
 router.delete("/:id", deleteContainerByIdHandler);
