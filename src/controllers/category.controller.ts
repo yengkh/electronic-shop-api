@@ -207,6 +207,50 @@ export const getCategoryByPathHandler = async (
   }
 };
 
+// Get Category by slug
+export const getCategoryBySlugHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { slug } = req.params;
+    if (!slug || typeof slug !== "string") {
+      sendError({
+        res,
+        status: 400,
+        message: `You must input a valid slug of category!`,
+        code: "VALIDATION_ERROR",
+        details: ["Missing or invalid 'slug' query parameter."],
+      });
+
+      return;
+    }
+
+    const category = await CategoryModel.findOne({ slug });
+    if (!category) {
+      sendError({
+        res,
+        status: 404,
+        message: `Can not find category with slug!`,
+        code: "NOT FOUND",
+        details: [`Slug: ${slug}`],
+      });
+    }
+
+    sendSuccess({
+      res,
+      status: 200,
+      message: "Category fetch successfully!",
+      data: category,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: true,
+    });
+  }
+};
+
 // Get category handler
 export const getCategoryHandler: RequestHandler = async (
   req: Request,
