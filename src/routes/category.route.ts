@@ -17,7 +17,7 @@ router.get("/:identifier", getCategoryHandler);
 
 /**
  * @swagger
- * /category/{slug}/slug:
+ * /category/slug/{slug}:
  *   get:
  *     summary: Get category by slug
  *     parameters:
