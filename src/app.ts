@@ -10,6 +10,8 @@ import routes from "./routes";
 import { getRateLimitConfig } from "./config/ratingLimit";
 import "../src/config/env";
 import path from "path";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
 
 const app: Express = express();
 
@@ -46,6 +48,9 @@ app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // API routes
 app.use("/api/v1", routes);
+
+// Doscument
+app.use("/dosc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Send 404 for unknown routes
 app.use((req: Request, res: Response, next: NextFunction) => {
