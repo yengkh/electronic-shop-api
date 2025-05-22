@@ -160,6 +160,53 @@ export const getCategoryHandlerById = async (
   }
 };
 
+// Get category by path
+export const getCategoryByPathHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { path } = req.query;
+
+    if (!path || typeof path !== "string") {
+      sendError({
+        res,
+        status: 400,
+        message: `You must input a valid path of category!`,
+        code: "VALIDATION_ERROR",
+        details: ["Missing or invalid 'path' query parameter."],
+      });
+
+      return;
+    }
+
+    const category = await CategoryModel.findOne({ path });
+
+    if (!category) {
+      sendError({
+        res,
+        status: 404,
+        message: "Category not found by path.",
+        code: "NOT_FOUND",
+        details: [`Path: ${path}`],
+      });
+
+      return;
+    }
+
+    sendSuccess({
+      res,
+      message: "Category fetched successfully!",
+      data: category,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: true,
+    });
+  }
+};
+
 // Get category handler
 export const getCategoryHandler: RequestHandler = async (
   req: Request,
