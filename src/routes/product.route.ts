@@ -12,6 +12,7 @@ import {
   removeVariantImagesController,
   filterProductsHandler,
   getRelatedProductsHandler,
+  getProductByPathHandler,
 } from "../controllers/product.controller";
 
 const router: Router = express.Router();
@@ -26,6 +27,7 @@ router.get("/", getAllProductsHandler);
 router.get("/:identifier", getProductByIdentifier);
 router.get("/filter/products", filterProductsHandler);
 router.get("/related/products", getRelatedProductsHandler);
+router.get("/product/by-path", getProductByPathHandler);
 router.delete("/:id", deleteProductHandler);
 router.patch(
   "/:id",

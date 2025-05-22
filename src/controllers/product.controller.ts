@@ -230,12 +230,9 @@ export const getAllProductsHandler = async (req: Request, res: Response) => {
 // Get prodct by path controller
 export const getProductByPathHandler = async (req: Request, res: Response) => {
   try {
-    const productPath = req.params.productPath;
-    console.log(productPath);
+    const { path } = req.query;
 
-    const exsitingProduct = await ProductModel.findOne({
-      path: productPath,
-    })
+    const exsitingProduct = await ProductModel.findOne({ path })
       .populate("brandId", "name slug path")
       .populate("categoryId", "name slug path")
       .sort({ createdAt: -1 })
@@ -253,7 +250,7 @@ export const getProductByPathHandler = async (req: Request, res: Response) => {
 
     sendSuccess({
       res,
-      message: `Product with path ${productPath} was retrived successfully!`,
+      message: `Product with path ${path} was retrived successfully!`,
       data: exsitingProduct,
     });
   } catch (error) {
