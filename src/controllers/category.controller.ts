@@ -166,7 +166,8 @@ export const getCategoryByPathHandler = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { path } = req.query;
+    const rawPath = req.query.path as string;
+    const path = decodeURIComponent(rawPath);
 
     if (!path || typeof path !== "string") {
       sendError({
