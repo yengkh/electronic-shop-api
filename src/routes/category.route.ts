@@ -36,6 +36,23 @@ router.get("/:identifier", getCategoryHandler);
  *         description: Can not get category
  */
 router.get("/slug/:slug", getCategoryBySlugHandler);
+
+/**
+ * @swagger
+ * /category/by-path:
+ *   get:
+ *     summary: Get category by path
+ *     parameters:
+ *       - in: query
+ *         name: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Full category path (e.g. /categories/computer-accessories)
+ *     responses:
+ *       200:
+ *         description: Category found
+ */
 router.get("/category/by-path", getCategoryByPathHandler);
 router.delete("/:id", deleteContainerByIdHandler);
 router.put("/:id", updateCategoryhandler);
