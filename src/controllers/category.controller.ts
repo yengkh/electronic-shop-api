@@ -166,10 +166,9 @@ export const getCategoryByPathHandler = async (
   res: Response
 ): Promise<void> => {
   try {
-    const rawPath = req.query.path as string;
-    const path = decodeURIComponent(rawPath);
+    const rawPath = req.query.path;
 
-    if (!path || typeof path !== "string") {
+    if (!rawPath || typeof rawPath !== "string") {
       sendError({
         res,
         status: 400,
@@ -177,9 +176,10 @@ export const getCategoryByPathHandler = async (
         code: "VALIDATION_ERROR",
         details: ["Missing or invalid 'path' query parameter."],
       });
-
       return;
     }
+
+    const path = decodeURIComponent(rawPath);
 
     const category = await CategoryModel.findOne({ path });
 
