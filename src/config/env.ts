@@ -9,11 +9,11 @@ dotenv.config({
 
 // Validate required environment variables
 const validateEnvVars = (): void => {
-  const requiredEnvVars = ["PORT", "MONGO_URI", "JWT_SECRET"];
+  const requiredEnvVars = ["PORT", "MONGO_URI", "ACCESS_TOKEN_SECRET"];
   requiredEnvVars.forEach((varName) => {
     if (!process.env[varName]) {
       throw new Error(`Environment variable ${varName} is missing`);
-    } 
+    }
   });
 };
 
@@ -24,7 +24,7 @@ const getConfig = (): AppConfig => {
   return {
     port: parseInt(process.env.PORT || "3000", 10),
     mongoUri: process.env.MONGO_URI as string,
-    jwtSecret: process.env.JWT_SECRET as string,
+    jwtSecret: process.env.ACCESS_TOKEN_SECRET as string,
     nodeEnv: process.env.NODE_ENV || "development",
     isProduction: process.env.NODE_ENV === "production",
   };

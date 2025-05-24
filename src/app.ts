@@ -1,4 +1,5 @@
 import express, { Express, Request, Response, NextFunction } from "express";
+import "../src/config/env";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -8,7 +9,6 @@ import { errorConverter, errorHandler } from "./utils/error";
 import ApiError from "./utils/apiError";
 import routes from "./routes";
 import { getRateLimitConfig } from "./config/ratingLimit";
-import "../src/config/env";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";

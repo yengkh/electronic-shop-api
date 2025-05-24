@@ -5,11 +5,12 @@ import userRoutes from "./user.route";
 import CategoryRouter from "./category.route";
 import SubCategoryRouter from "./subCategory.route";
 import Products from "./product.route";
+import Auth from "./auth.route";
 
 const router = Router();
 const routes: Route[] = [
   {
-    path: "",
+    path: "/user",
     route: userRoutes,
   },
   {
@@ -23,6 +24,10 @@ const routes: Route[] = [
   {
     path: "/product",
     route: Products,
+  },
+  {
+    path: "/auth",
+    route: Auth,
   },
 ];
 

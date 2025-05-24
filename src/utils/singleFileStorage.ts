@@ -2,7 +2,7 @@ import multer from "multer";
 import { getUploadPath } from "../config/fileStorage";
 import path from "path";
 
-type UploadFolders = "subcategories" | "products" | "brands";
+type UploadFolders = "subcategories" | "products" | "brands" | "userAvatars";
 
 export const createUploader = (folder: UploadFolders) => {
   const storage = multer.diskStorage({
