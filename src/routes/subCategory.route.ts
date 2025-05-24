@@ -7,6 +7,7 @@ import {
   updateSubcategoryHandler,
   getSubcategoryByCategoryIdHandler,
   getSubcategoryByPath,
+  getSubcategoryHandlerBySlug,
 } from "../controllers/subcategory.controller";
 import { createUploader } from "../utils/singleFileStorage";
 
@@ -19,6 +20,7 @@ router.get("/", getAllSubcategoryHandler);
 router.get("/:identifier", getSubcategoryByIdentifier);
 router.get("/category/:categoryId", getSubcategoryByCategoryIdHandler);
 router.get("/subcategory/by-path", getSubcategoryByPath);
+router.get("/slug/:identifier", getSubcategoryHandlerBySlug);
 router.delete("/:id", deleteSubcategoryHandler);
 router.put("/:id", upload.single("image"), updateSubcategoryHandler);
 
