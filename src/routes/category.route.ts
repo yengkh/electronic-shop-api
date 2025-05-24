@@ -39,7 +39,7 @@ router.get("/slug/:slug", getCategoryBySlugHandler);
 
 /**
  * @swagger
- * /category/by-path:
+ * /category/category/by-path:
  *   get:
  *     summary: Get category by path
  *     parameters:
