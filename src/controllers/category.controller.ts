@@ -251,7 +251,7 @@ export const getCategoryBySlugHandler = async (
   }
 };
 
-// Get category handler
+// Get category by identifier handler
 export const getCategoryHandler: RequestHandler = async (
   req: Request,
   res: Response,
