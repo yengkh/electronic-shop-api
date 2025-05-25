@@ -117,3 +117,68 @@ export const getUserByIDHandler = async (
     });
   }
 };
+
+// Update user infor
+export const updateUserHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    let { name, email, phone, role } = req.body;
+    if (!mongoose.isValidObjectId(userId)) {
+      sendError({
+        res,
+        status: 400,
+        message: "User ID is invalid!",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+
+    const findUser = await UserModel.findById(userId);
+    if (!findUser) {
+      sendError({
+        res,
+        status: 404,
+        message: "User not found!",
+        code: "NOT_FOUND",
+      });
+
+      return;
+    }
+
+    const checkUser = await UserModel.findOne({
+      $or: [{ email, phone }],
+      _id: { $ne: userId },
+    });
+    if (checkUser) {
+      sendError({
+        res,
+        status: 400,
+        message: "User already exist!",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+
+    if (name) findUser.name = name;
+    if (email) findUser.email = email;
+    if (phone) findUser.phone = phone;
+    if (role) findUser.role = role;
+
+    sendSuccess({
+      res,
+      status: 200,
+      message: "User updated successfully!",
+      data: findUser,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: isDevelopment,
+    });
+  }
+};
