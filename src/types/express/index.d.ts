@@ -5,7 +5,7 @@ declare module "express" {
     user?: {
       _id: string;
       role: "admin" | "customer";
-      email?: string;
+      phone: string;
     };
   }
 }

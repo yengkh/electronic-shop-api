@@ -26,8 +26,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       errors.push("All fields are required.");
     }
 
-    if (email && !validator.isEmail(email)) {
-      errors.push("Invalid email address.");
+    if (email?.trim()) {
+      if (!validator.isEmail(email)) {
+        errors.push("Invalid email address.");
+      }
     }
 
     if (phone && !validator.isMobilePhone(phone, "any")) {
@@ -58,20 +60,29 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       };
     }
     // Check if email or phone already exists
-    const existingUser = await UserModel.findOne({
-      $or: [{ email }, { phone }],
-    });
+    const orConditions: any[] = [];
 
-    if (existingUser) {
-      sendError({
-        res,
-        status: 400,
-        message: "Email or phone already registered.",
-        code: "VALIDATION_ERROR",
-        details: errors,
-      });
+    if (email?.trim()) {
+      orConditions.push({ email });
+    }
 
-      return;
+    if (phone) {
+      orConditions.push({ phone });
+    }
+
+    if (orConditions.length > 0) {
+      const existingUser = await UserModel.findOne({ $or: orConditions });
+
+      if (existingUser) {
+        sendError({
+          res,
+          status: 400,
+          message: "Email or phone already registered.",
+          code: "VALIDATION_ERROR",
+          details: ["Email or phone already registered."],
+        });
+        return;
+      }
     }
 
     // Hash password
@@ -89,9 +100,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
 
     const payload = {
-      _id: newUser._id,
-      role: newUser.role,
-      email: newUser.email,
+      _id: newUser._id.toString(),
+      role: newUser.role as "admin" | "customer",
+      phone: newUser.phone.toString(),
     };
 
     const accessToken = generateAccessToken(payload);
@@ -160,7 +171,11 @@ export const login = async (req: Request, res: Response) => {
       return;
     }
 
-    const payload = { id: user._id, role: user.role };
+    const payload = {
+      _id: user._id.toString(),
+      role: user.role as "admin" | "customer",
+      phone: user.phone.toString(),
+    };
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
@@ -215,6 +230,7 @@ export const refreshTokenHandler = async (
     const payload = {
       _id: decoded._id,
       role: decoded.role,
+      phone: decoded.phone,
     };
 
     const newAccessToken = generateAccessToken(payload);
