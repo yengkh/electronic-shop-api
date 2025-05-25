@@ -1,5 +1,5 @@
-import express, { Express, Request, Response, NextFunction } from "express";
 import "../src/config/env";
+import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";

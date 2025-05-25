@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Users from "../models/user.model";
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import { sendError, sendSuccess } from "../utils/apiRespone";
 import bcrypt from "bcryptjs";
 import { handleHttpError } from "../utils/router500Error";
@@ -17,7 +17,7 @@ const SUP_DOMAIN_IMAGE_PATH_USER_AVATAR =
 // Resister new user
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, phone, password, role } = req.body;
+    let { name, email, phone, password, role } = req.body;
 
     const errors: string[] = [];
 
@@ -26,9 +26,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       errors.push("All fields are required.");
     }
 
+    let sanitizedEmail: string | undefined = undefined;
+
     if (email?.trim()) {
-      if (!validator.isEmail(email)) {
-        errors.push("Invalid email address.");
+      const trimmedEmail = email.trim();
+      if (validator.isEmail(trimmedEmail)) {
+        sanitizedEmail = trimmedEmail;
       }
     }
 
@@ -91,7 +94,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     // Create user
     const newUser = await UserModel.create({
       name,
-      email,
+      email: sanitizedEmail,
       phone,
       password: hashedPassword,
       avatar: imageData,
@@ -211,6 +214,7 @@ export const refreshTokenHandler = async (
   res: Response
 ): Promise<void> => {
   const { refreshToken } = req.body;
+
   if (!refreshToken) {
     sendError({
       res,
