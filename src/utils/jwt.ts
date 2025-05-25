@@ -1,3 +1,4 @@
+import { TokenPayload } from "../types/token-payload.interface";
 import jwt, { SignOptions } from "jsonwebtoken";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
@@ -12,7 +13,7 @@ if (!REFRESH_TOKEN_SECRET) {
   throw new Error("REFRESH_TOKEN_SECRET is not defined.");
 }
 
-export const generateAccessToken = (payload: object): string => {
+export const generateAccessToken = (payload: TokenPayload): string => {
   const options: SignOptions = {
     expiresIn: ACCESS_TOKEN_LIFE as SignOptions["expiresIn"],
   };
@@ -20,7 +21,7 @@ export const generateAccessToken = (payload: object): string => {
   return jwt.sign(payload, ACCESS_TOKEN_SECRET, options);
 };
 
-export const generateRefreshToken = (payload: object) => {
+export const generateRefreshToken = (payload: TokenPayload) => {
   const options: SignOptions = {
     expiresIn: REFRESH_TOKEN_LIFE as SignOptions["expiresIn"],
   };
