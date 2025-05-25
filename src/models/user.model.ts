@@ -21,9 +21,7 @@ const UserSchema = new Schema<UserInterface>(
     },
     email: {
       type: String,
-      required: false,
       unique: true,
-      default: "",
     },
     phone: {
       type: Number,
