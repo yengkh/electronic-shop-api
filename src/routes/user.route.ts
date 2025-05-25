@@ -11,7 +11,8 @@ const router: Router = Router();
 
 router.get("/list", authenticate("admin"), getAllUsersHandler);
 router.get("/by-id/:userId", authenticate("admin"), getUserByIDHandler);
-router.get("/me", getCurrentUserhandler);
+router.get("/me", authenticate("admin"), getCurrentUserhandler);
+router.get("/profile", authenticate("customer"), getCurrentUserhandler);
 
 router.patch("/:userId", authenticate("admin"), updateUserHandler);
 

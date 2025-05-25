@@ -15,8 +15,6 @@ export const getCurrentUserhandler = async (
   try {
     const user = req.user;
 
-    console.log("Current user infor ", user);
-
     sendSuccess({
       res,
       status: 200,
@@ -168,6 +166,8 @@ export const updateUserHandler = async (
     if (email) findUser.email = email;
     if (phone) findUser.phone = phone;
     if (role) findUser.role = role;
+
+    await findUser.save();
 
     sendSuccess({
       res,
