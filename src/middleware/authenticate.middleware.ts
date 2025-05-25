@@ -1,5 +1,5 @@
-import { sendError } from "@/utils/apiRespone";
-import { handleHttpError } from "@/utils/router500Error";
+import { sendError } from "../utils/apiRespone";
+import { handleHttpError } from "../utils/router500Error";
 import { Request, NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
 
