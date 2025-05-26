@@ -3,9 +3,12 @@ import Users from "../models/user.model";
 import mongoose from "mongoose";
 import { handleHttpError } from "../utils/router500Error";
 import { sendError, sendSuccess } from "../utils/apiRespone";
-
+import { removeUserAvatar } from "../utils/removeUserAvatar.util";
 const UserModel = Users(mongoose);
 const isDevelopment = process.env.NODE_ENV === "development";
+const FILE_DOMAIN = process.env.FILE_DOMAIN;
+const SUP_DOMAIN_IMAGE_PATH_USER_AVATAR =
+  process.env.SUP_DOMAIN_IMAGE_PATH_USER_AVATAR;
 
 // Get Current user
 export const getCurrentUserhandler = async (
@@ -135,7 +138,7 @@ export const updateUserHandler = async (
       return;
     }
 
-    const findUser = await UserModel.findById(userId);
+    const findUser = await UserModel.findById(userId).select("-password");
     if (!findUser) {
       sendError({
         res,
@@ -167,6 +170,9 @@ export const updateUserHandler = async (
     if (phone) findUser.phone = phone;
     if (role) findUser.role = role;
 
+    if (name && findUser.avatar) {
+      findUser.avatar.altText = name.trim();
+    }
     await findUser.save();
 
     sendSuccess({
@@ -174,6 +180,117 @@ export const updateUserHandler = async (
       status: 200,
       message: "User updated successfully!",
       data: findUser,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: isDevelopment,
+    });
+  }
+};
+
+// Update user profile image
+export const updateUserProfileImageHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+
+    if (!mongoose.isValidObjectId(userId)) {
+      sendError({
+        res,
+        status: 400,
+        message: "User ID is invalid!",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+
+    const user = await UserModel.findById(userId).select("avatar");
+    if (!user) {
+      sendError({
+        res,
+        status: 404,
+        message: "User not found!",
+        code: "NOT_FOUND",
+      });
+
+      return;
+    }
+
+    if (!req.file) {
+      sendError({
+        res,
+        status: 400,
+        message: "Profile image is required!",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+
+    if (user.avatar.url) {
+      removeUserAvatar(user.avatar.url);
+    }
+
+    const newUserAvatar = {
+      url: `${FILE_DOMAIN}${SUP_DOMAIN_IMAGE_PATH_USER_AVATAR}${req.file.filename}`,
+      altText: user.avatar.altText,
+    };
+
+    user.avatar = newUserAvatar;
+    await user.save();
+    sendSuccess({
+      res,
+      status: 200,
+      message: "User profile image updated successfully!",
+      data: user,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: isDevelopment,
+    });
+  }
+};
+
+// Delete user handler
+export const deleteUserHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    if (!mongoose.isValidObjectId(userId)) {
+      sendError({
+        res,
+        status: 400,
+        message: "User ID is invalid!",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+
+    const user = await UserModel.findByIdAndDelete(userId);
+    if (!user) {
+      sendError({
+        res,
+        status: 404,
+        message: "User not found!",
+        code: "NOT_FOUND",
+      });
+
+      return;
+    }
+
+    sendSuccess({
+      res,
+      status: 200,
+      message: "User deleted successfully!",
+      data: user,
     });
   } catch (error) {
     handleHttpError(error, res, {
