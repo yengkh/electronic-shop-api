@@ -28,11 +28,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     let sanitizedEmail: string | undefined = undefined;
 
-    if (email?.trim()) {
-      const trimmedEmail = email.trim();
-      if (validator.isEmail(trimmedEmail)) {
-        sanitizedEmail = trimmedEmail;
-      }
+    if (email && !validator.isEmail(email)) {
+      errors.push("Invalid email format.");
     }
 
     if (phone && !validator.isMobilePhone(phone, "any")) {
