@@ -4,7 +4,8 @@ import { Request, NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
 
 const isDevelopment = process.env.NODE_ENV === "development";
-export const authenticate = (role: "admin" | "customer") => {
+
+export const authenticate = (roles: ("admin" | "customer")[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(" ")[1];
 
@@ -26,7 +27,7 @@ export const authenticate = (role: "admin" | "customer") => {
         process.env.ACCESS_TOKEN_SECRET!
       ) as any;
 
-      if (!role.includes(decoded.role)) {
+      if (!roles.includes(decoded.role)) {
         sendError({
           res,
           status: 403,

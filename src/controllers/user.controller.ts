@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import { handleHttpError } from "../utils/router500Error";
 import { sendError, sendSuccess } from "../utils/apiRespone";
 import { removeUserAvatar } from "../utils/removeUserAvatar.util";
+import bcrypt from "bcryptjs";
+import validator from "validator";
+
 const UserModel = Users(mongoose);
 const isDevelopment = process.env.NODE_ENV === "development";
 const FILE_DOMAIN = process.env.FILE_DOMAIN;
@@ -247,6 +250,146 @@ export const updateUserProfileImageHandler = async (
       status: 200,
       message: "User profile image updated successfully!",
       data: user,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: isDevelopment,
+    });
+  }
+};
+
+// Remove user avatar
+export const removeUserAvatarHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    if (!mongoose.isValidObjectId(userId)) {
+      sendError({
+        res,
+        status: 400,
+        message: "User ID is invalid!",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+
+    const user = await UserModel.findById(userId).select("avatar");
+    if (!user) {
+      sendError({
+        res,
+        status: 404,
+        message: "User not found!",
+        code: "NOT_FOUND",
+      });
+
+      return;
+    }
+
+    if (user.avatar.url) {
+      removeUserAvatar(user.avatar.url);
+      user.avatar = { url: "", altText: "" };
+    }
+    await user.save();
+
+    sendSuccess({
+      res,
+      status: 200,
+      message: "User avatar removed successfully!",
+      data: user,
+    });
+  } catch (error) {
+    handleHttpError(error, res, {
+      statusCode: 500,
+      exposeDetails: isDevelopment,
+    });
+  }
+};
+
+// Change user password handler
+export const changePasswordHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { oldPassword, newPassword } = req.body;
+
+    if (!mongoose.isValidObjectId(userId)) {
+      sendError({
+        res,
+        status: 400,
+        message: "Invalid user ID.",
+        code: "VALIDATION_ERROR",
+      });
+      return;
+    }
+
+    if (!oldPassword || !newPassword) {
+      sendError({
+        res,
+        status: 400,
+        message: "Old and new passwords are required.",
+        code: "VALIDATION_ERROR",
+      });
+      return;
+    }
+
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      sendError({
+        res,
+        status: 404,
+        message: "User not found.",
+        code: "NOT_FOUND",
+      });
+
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      sendError({
+        res,
+        status: 400,
+        message: "Old password is incorrect.",
+        code: "INVALID_PASSWORD",
+      });
+      return;
+    }
+
+    if (oldPassword === newPassword) {
+      sendError({
+        res,
+        status: 400,
+        message: "New password must be different from old password.",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+
+    if (!validator.isStrongPassword(newPassword)) {
+      sendError({
+        res,
+        status: 400,
+        message:
+          "New password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one symbol.",
+        code: "VALIDATION_ERROR",
+      });
+
+      return;
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    sendSuccess({
+      res,
+      status: 200,
+      message: "Password changed successfully.",
     });
   } catch (error) {
     handleHttpError(error, res, {
