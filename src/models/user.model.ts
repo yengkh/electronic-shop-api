@@ -22,6 +22,9 @@ const UserSchema = new Schema<UserInterface>(
     email: {
       type: String,
       unique: true,
+      sparse: true,
+      lowercase: true,
+      trim: true,
     },
     phone: {
       type: Number,
