@@ -12,6 +12,7 @@ import { getRateLimitConfig } from "./config/ratingLimit";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
+import { sendSuccess } from "./utils/apiRespone";
 
 const app: Express = express();
 
@@ -51,6 +52,15 @@ app.use("/api/v1", routes);
 
 // Doscument
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Test with jest
+app.post("/api/test", (req, res) => {
+  sendSuccess({
+    res,
+    status: 200,
+    message: "Testing API is working!",
+  });
+});
 
 // Send 404 for unknown routes
 app.use((req: Request, res: Response, next: NextFunction) => {
